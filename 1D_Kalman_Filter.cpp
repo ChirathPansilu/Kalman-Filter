@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <tuple>
 #include <math.h>
 // #include <corecrt_math_defines.h>
@@ -36,6 +37,27 @@ int main()
 
     tie(new_mean, new_var) = state_prediction(10, 4, 12, 4);
     printf("[%f, %f]\n", new_mean, new_var);
+
+    vector<double> measurements{ 5, 6, 7, 9, 10 };
+    double measurement_sig = 4;
+
+    vector<double> motion{ 1,1,2,1,1 };
+    double motion_sig = 2;
+
+    //Initial state
+    double mu = 0;
+    double sig = 1000;
+
+    double estimated_mu = mu;
+    double estimated_var = pow(sig, 2.0);
+
+    for (size_t i = 0; i < measurements.size(); i++) {
+        tie(estimated_mu, estimated_var) = measurement_update(estimated_mu, estimated_var, measurements[i], pow(measurement_sig, 2));
+        printf("update:  [%f, %f]\n", estimated_mu, estimated_var);
+        
+        tie(estimated_mu, estimated_var) = state_prediction(estimated_mu, estimated_var, motion[i], pow(motion_sig, 2));
+        printf("predict: [%f, %f]\n", estimated_mu, estimated_var);
+    }
     
     return 0;
 }
